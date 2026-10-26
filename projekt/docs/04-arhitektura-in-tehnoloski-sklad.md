@@ -79,6 +79,8 @@ flowchart LR
 
 ### 3. Arhitekturne odločitve
 
+Podrobna utemeljitev vsake odločitve je v [ADR zapisih](adr/).
+
 - **En projekt v Next.js** – frontend in backend v isti kodi, en jezik (JavaScript), en ukaz za zagon.
 - **React** – razširjen in dobro dokumentiran, primeren za aplikacijo z več pogledi glede na vlogo.
 - **PostgreSQL** – podatki so povezani (podjetja, questi, oddaje), zato je relacijska baza naravna izbira. PostgreSQL je zanesljiv, brezplačen in ga uporablja tudi Supabase, zato je kasnejša selitev v oblak preprosta.
