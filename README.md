@@ -17,7 +17,7 @@ Uporabniške vloge: **podjetje**, **ustvarjalec** in **administrator**.
 ## Struktura repozitorija
 
 ```
-projekt/
+GetAd/
 ├── README.md
 ├── .gitignore
 ├── frontend/
