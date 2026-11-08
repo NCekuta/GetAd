@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import prisma from './db.js';
+import authRoutes from './routes/auth.js';
 
 const app = express();
 
@@ -13,6 +14,8 @@ app.get('/api/health', async (req, res) => {
   const users = await prisma.user.count();
   res.json({ ok: true, users });
 });
+
+app.use('/api/auth', authRoutes); // registracija, kasneje še prijava in odjava
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
