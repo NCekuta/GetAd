@@ -4,11 +4,11 @@
 
 - **Funkcionalnost:** 1 Registracija in prijava (MVP)
 - **Vloga:** podjetje, ustvarjalec
-- **Zgodba:** Kot uporabnik želim ustvariti račun z izbiro vloge (podjetje ali ustvarjalec) in se varno prijaviti v sistem (2FA).
+- **Zgodba:** Kot uporabnik želim ustvariti račun z izbiro vloge (podjetje ali ustvarjalec) in se prijaviti v sistem z e-pošto in geslom.
 - **Pogoji:**
   - Pri registraciji sta na voljo samo vlogi podjetje in ustvarjalec.
   - Geslo ima vsaj 8 znakov, e-pošta mora biti unikatna.
-  - Ob prijavi se preverja 2FA.
+  - Prijava z napačnim geslom ali v blokiran račun ni mogoča.
 
 ## US-02 Objava questa
 
@@ -17,7 +17,7 @@
 - **Zgodba:** Kot podjetje želim objaviti quest z opisom, slikami, nagrado in rokom, da ustvarjalci vedo, kakšen video potrebujem.
 - **Pogoji:**
   - Naslov, opis, zahteve, nagrada in rok (vsaj 7 dni) so obvezni.
-  - Naložimo lahko vsaj 3 slike, JPG ali PNG, do 5 MB.
+  - Naložimo lahko največ 3 slike, JPG ali PNG, vsaka do 5 MB.
   - Quest se shrani kot `draft` in z gumbom "Pošlji v pregled" preide v `in_review` k adminu.
 
 ## US-03 Odobritev questa
@@ -34,9 +34,9 @@
 
 - **Funkcionalnost:** 4 Oddaja AI videa (MVP)
 - **Vloga:** ustvarjalec
-- **Zgodba:** Kot ustvarjalec želim oddati AI video velikosti vsaj 100 MB, na odprt quest in se potegovati za nagrado.
+- **Zgodba:** Kot ustvarjalec želim oddati AI video (največ 100 MB) na odprt quest in se potegovati za nagrado.
 - **Pogoji:**
-  - Video je MP4 in najmanj 100 MB, obvezni so še naslov, opis in AI orodje.
+  - Video je MP4 in največ 100 MB, obvezni so še naslov, opis in AI orodje.
   - Na en quest je mogoča samo ena oddaja, samo do roka.
   - Oddaja dobi stanje `pending`, do roka jo je mogoče urediti ali umakniti.
 

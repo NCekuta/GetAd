@@ -1,5 +1,5 @@
 ---
-status: sprejeta
+status: "nadomeščena z [ADR-0010](0010-prijava-z-jwt.md)"
 date: 2026-10-26
 ---
 

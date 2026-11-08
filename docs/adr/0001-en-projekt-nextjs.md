@@ -1,5 +1,5 @@
 ---
-status: sprejeta
+status: "nadomeščena z [ADR-0009](0009-locen-frontend-in-backend.md)"
 date: 2026-10-26
 ---
 

@@ -55,4 +55,6 @@ Izbrana možnost: "Lokalni razvoj, kasneje AWS Amplify + Supabase", ker Amplify 
 
 ## Dodatne informacije
 
-Povezano: [0001](0001-en-projekt-nextjs.md), [0003](0003-postgresql-podatkovna-baza.md), [0006](0006-hramba-datotek-v-lokalni-mapi.md).
+Po prehodu na ločen frontend in backend ([0009](0009-locen-frontend-in-backend.md)) se frontend objavi na AWS Amplify, Express backend pa na storitvi, ki podpira Node.js strežnike (npr. Render); to bomo ob objavi zapisali v nov ADR.
+
+Povezano: [0009](0009-locen-frontend-in-backend.md), [0003](0003-postgresql-podatkovna-baza.md), [0006](0006-hramba-datotek-v-lokalni-mapi.md).
