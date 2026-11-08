@@ -15,7 +15,7 @@ app.get('/api/health', async (req, res) => {
   res.json({ ok: true, users });
 });
 
-app.use('/api/auth', authRoutes); // registracija, kasneje še prijava in odjava
+app.use('/api/auth', authRoutes); // registracija, prijava, odjava
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

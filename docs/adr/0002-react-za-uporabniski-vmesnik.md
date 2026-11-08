@@ -13,7 +13,7 @@ Aplikacija ima več pogledov, ki se razlikujejo glede na vlogo uporabnika (sezna
 
 * gradnja iz ponovno uporabnih komponent,
 * dobra dokumentacija in veliko primerov,
-* združljivost z izbranim ogrodjem (Next.js),
+* preprost zagon z orodjem Vite,
 * obstoječe znanje razvijalca.
 
 ## Obravnavane možnosti
@@ -24,13 +24,13 @@ Aplikacija ima več pogledov, ki se razlikujejo glede na vlogo uporabnika (sezna
 
 ## Odločitev
 
-Izbrana možnost: "React", ker je najbolj razširjen, ima največ dokumentacije in knjižnic, Next.js pa temelji na njem. Komponente omogočajo, da se isti elementi (npr. kartica questa) uporabijo v več pogledih.
+Izbrana možnost: "React", ker je najbolj razširjen, ima največ dokumentacije in knjižnic (npr. React Router za usmerjanje med stranmi). Komponente omogočajo, da se isti elementi (npr. kartica questa) uporabijo v več pogledih.
 
 ### Posledice
 
 * Dobro, ker je za skoraj vsak problem na voljo primer ali knjižnica.
 * Dobro, ker se pogledi za različne vloge sestavijo iz istih komponent.
-* Slabo, ker React sam po sebi ne določa strukture projekta – to pokrije Next.js.
+* Slabo, ker React sam po sebi ne določa strukture projekta, zato mape (strani, komponente) uredimo sami.
 * Slabo, ker ima React več ponavljajoče se kode (npr. upravljanje stanja obrazcev) kot Vue ali Svelte.
 
 ## Prednosti in slabosti možnosti
@@ -38,7 +38,7 @@ Izbrana možnost: "React", ker je najbolj razširjen, ima največ dokumentacije 
 ### Vue (Nuxt)
 
 * Dobro, ker je enostaven za učenje in ima pregledno sintakso.
-* Slabo, ker je manj razširjen in bi pomenil Nuxt namesto Next.js.
+* Slabo, ker je manj razširjen in ima manj knjižnic kot React.
 
 ### Svelte (SvelteKit)
 
@@ -47,4 +47,4 @@ Izbrana možnost: "React", ker je najbolj razširjen, ima največ dokumentacije 
 
 ## Dodatne informacije
 
-Povezano: [0001 – En projekt v Next.js](0001-en-projekt-nextjs.md). Next.js je kasneje zamenjal Vite, React ostaja ([0009](0009-locen-frontend-in-backend.md)).
+Povezano: [0001 – Ločen frontend in backend](0001-locen-frontend-in-backend.md).

@@ -7,7 +7,7 @@ date: 2026-11-08
 
 ## Kontekst in opis problema
 
-V [ADR-0005](0005-authjs-za-avtentikacijo.md) smo za prijavo izbrali Auth.js, ki je narejen za Next.js. Po prehodu na ločen Express backend ([ADR-0009](0009-locen-frontend-in-backend.md)) Auth.js ni več naravna izbira. Backend mora pred vsako zaščiteno akcijo vedeti, kdo je uporabnik in kakšno vlogo ima. Kako izvesti prijavo in seje v Express backendu?
+Uporabniki se registrirajo z e-pošto in geslom ter izberejo vlogo (podjetje ali ustvarjalec). Express backend ([ADR-0001](0001-locen-frontend-in-backend.md)) mora pred vsako zaščiteno akcijo vedeti, kdo je uporabnik in kakšno vlogo ima. Blokiran uporabnik se ne sme prijaviti. Kako izvesti prijavo in seje?
 
 ## Dejavniki odločitve
 
@@ -21,7 +21,7 @@ V [ADR-0005](0005-authjs-za-avtentikacijo.md) smo za prijavo izbrali Auth.js, ki
 * JWT žeton v `httpOnly` piškotku (`jsonwebtoken` + `bcryptjs`)
 * Seje na strežniku (`express-session`)
 * Passport.js
-* Auth.js z Express adapterjem
+* Auth.js (NextAuth)
 
 ## Odločitev
 
@@ -53,11 +53,11 @@ Izbrana možnost: "JWT žeton v `httpOnly` piškotku", ker potrebuje le dve majh
 * Dobro, ker podpira veliko načinov prijave.
 * Slabo, ker za samo prijavo z geslom doda več konfiguracije kot koristi.
 
-### Auth.js z Express adapterjem
+### Auth.js (NextAuth)
 
-* Dobro, ker je preverjena knjižnica.
-* Slabo, ker je adapter za Express manj dokumentiran in prilagojen predvsem Next.js.
+* Dobro, ker je preverjena knjižnica za prijavo in seje.
+* Slabo, ker je narejena predvsem za Next.js, podpora za Express pa je slabše dokumentirana.
 
 ## Dodatne informacije
 
-Nadomešča [ADR-0005](0005-authjs-za-avtentikacijo.md). Povezano: [US-01 Registracija in prijava](../05-uporabniske-zgodbe.md), [US-15 Blokiranje uporabnikov](../05-uporabniske-zgodbe.md).
+Povezano: [US-01 Registracija in prijava](../05-uporabniske-zgodbe.md), [US-15 Blokiranje uporabnikov](../05-uporabniske-zgodbe.md).

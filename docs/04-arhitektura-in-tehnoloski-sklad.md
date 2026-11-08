@@ -101,11 +101,11 @@ Backend:
 
 Podrobna utemeljitev vsake odločitve je v [ADR zapisih](adr/).
 
-- **Ločen frontend in backend** – frontend (React + Vite) in backend (Express) sta v ločenih mapah, oba v JavaScriptu. Nadomešča prvotno odločitev za en Next.js projekt.
+- **Ločen frontend in backend** – frontend (React + Vite) in backend (Express) sta v ločenih mapah, oba v JavaScriptu.
 - **React** – razširjen in dobro dokumentiran, primeren za aplikacijo z več pogledi glede na vlogo.
 - **PostgreSQL** – podatki so povezani (podjetja, questi, oddaje), zato je relacijska baza naravna izbira. PostgreSQL je zanesljiv, brezplačen in ga uporablja tudi Supabase, zato je kasnejša selitev v oblak preprosta.
 - **Prisma** – tabele so opisane na enem mestu, migracije se ustvarijo samodejno, poizvedbe pa so pregledne in varne pred SQL injekcijami.
-- **Prijava z JWT** – preprosta prijava z žetonom v `httpOnly` piškotku. Nadomešča prvotno odločitev za Auth.js.
+- **Prijava z JWT** – preprosta prijava z žetonom v `httpOnly` piškotku.
 - **Datoteke v lokalni mapi** – za lokalni razvoj najenostavnejše, ob objavi v oblak se zamenjajo s Supabase Storage.
 - **Preverjanje roka ob branju** – zapiranje questov deluje brez ločenega procesa, stanje pa je vedno pravilno, ko ga kdo pogleda.
 - **Pripravljeno za oblak** – frontend se lahko kasneje objavi na AWS Amplify, backend na storitvi za Node.js (npr. Render), baza se preseli v Supabase, datoteke pa v Supabase Storage. Ker Supabase uporablja PostgreSQL, se zamenja samo povezava do baze v `.env`, koda aplikacije pa ostane enaka.

@@ -40,16 +40,14 @@ GetAd/
 ### Arhitekturne odločitve (ADR)
 
 - [Predloga ADR](docs/adr/adr-template.md)
-- [0001 – En projekt v Next.js za frontend in backend](docs/adr/0001-en-projekt-nextjs.md) *(nadomeščena z 0009)*
+- [0001 – Ločen frontend (React + Vite) in backend (Express)](docs/adr/0001-locen-frontend-in-backend.md)
 - [0002 – React za uporabniški vmesnik](docs/adr/0002-react-za-uporabniski-vmesnik.md)
 - [0003 – PostgreSQL kot podatkovna baza](docs/adr/0003-postgresql-podatkovna-baza.md)
 - [0004 – Prisma za dostop do baze](docs/adr/0004-prisma-za-dostop-do-baze.md)
-- [0005 – Auth.js za avtentikacijo](docs/adr/0005-authjs-za-avtentikacijo.md) *(nadomeščena z 0010)*
+- [0005 – Prijava z JWT žetonom v piškotku](docs/adr/0005-prijava-z-jwt.md)
 - [0006 – Hramba datotek v lokalni mapi](docs/adr/0006-hramba-datotek-v-lokalni-mapi.md)
 - [0007 – Preverjanje roka ob branju](docs/adr/0007-preverjanje-roka-ob-branju.md)
 - [0008 – Pripravljenost za selitev v oblak](docs/adr/0008-pripravljenost-za-oblak.md)
-- [0009 – Ločen frontend (React + Vite) in backend (Express)](docs/adr/0009-locen-frontend-in-backend.md)
-- [0010 – Prijava z JWT žetonom v piškotku](docs/adr/0010-prijava-z-jwt.md)
 
 ## Razvojni proces
 

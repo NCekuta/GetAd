@@ -14,7 +14,7 @@ V prvi fazi aplikacija teče samo lokalno (lokalni PostgreSQL, mapa `uploads`). 
 * lokalni razvoj brez zunanjih storitev,
 * objava brez sprememb poslovne logike,
 * nizki ali ničelni stroški,
-* podpora za Next.js in PostgreSQL.
+* podpora za React (Vite), Node.js (Express) in PostgreSQL.
 
 ## Obravnavane možnosti
 
@@ -25,7 +25,7 @@ V prvi fazi aplikacija teče samo lokalno (lokalni PostgreSQL, mapa `uploads`). 
 
 ## Odločitev
 
-Izbrana možnost: "Lokalni razvoj, kasneje AWS Amplify + Supabase", ker Amplify podpira Next.js aplikacije, Supabase pa uporablja PostgreSQL, zato se zamenja samo povezava do baze v `.env`, koda aplikacije pa ostane enaka. Vse nastavitve, ki se med okolji razlikujejo, so v okoljskih spremenljivkah (`.env`), dostop do datotek pa je zaprt v en modul.
+Izbrana možnost: "Lokalni razvoj, kasneje AWS Amplify + Supabase", ker Amplify podpira objavo React aplikacij, Supabase pa uporablja PostgreSQL, zato se zamenja samo povezava do baze v `.env`, koda aplikacije pa ostane enaka. Vse nastavitve, ki se med okolji razlikujejo, so v okoljskih spremenljivkah (`.env`), dostop do datotek pa je zaprt v en modul.
 
 ### Posledice
 
@@ -40,7 +40,7 @@ Izbrana možnost: "Lokalni razvoj, kasneje AWS Amplify + Supabase", ker Amplify 
 
 ### Vercel + Supabase
 
-* Dobro, ker je Vercel avtor Next.js in ima najboljšo podporo.
+* Dobro, ker je objava frontenda zelo preprosta.
 * Slabo, ker ima brezplačni paket strožje omejitve velikosti zahtevkov za nalaganje velikih datotek.
 
 ### Lasten VPS z Dockerjem
@@ -55,6 +55,6 @@ Izbrana možnost: "Lokalni razvoj, kasneje AWS Amplify + Supabase", ker Amplify 
 
 ## Dodatne informacije
 
-Po prehodu na ločen frontend in backend ([0009](0009-locen-frontend-in-backend.md)) se frontend objavi na AWS Amplify, Express backend pa na storitvi, ki podpira Node.js strežnike (npr. Render); to bomo ob objavi zapisali v nov ADR.
+Ker sta frontend in backend ločena ([0001](0001-locen-frontend-in-backend.md)), se frontend objavi na AWS Amplify, Express backend pa na storitvi, ki podpira Node.js strežnike (npr. Render); to bomo ob objavi zapisali v nov ADR.
 
-Povezano: [0009](0009-locen-frontend-in-backend.md), [0003](0003-postgresql-podatkovna-baza.md), [0006](0006-hramba-datotek-v-lokalni-mapi.md).
+Povezano: [0001](0001-locen-frontend-in-backend.md), [0003](0003-postgresql-podatkovna-baza.md), [0006](0006-hramba-datotek-v-lokalni-mapi.md).
