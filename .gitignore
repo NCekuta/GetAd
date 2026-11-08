@@ -3,12 +3,8 @@ node_modules/
 .pnp
 .pnp.js
 
-# Next.js
-.next/
-out/
-build/
-next-env.d.ts
-*.tsbuildinfo
+# Zgrajena aplikacija (Vite)
+dist/
 
 # Okoljske spremenljivke (gesla, ključi) – .env.example ostane v repozitoriju
 .env
