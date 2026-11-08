@@ -7,7 +7,7 @@ date: 2026-11-08
 
 ## Kontekst in opis problema
 
-V [ADR-0001](0001-en-projekt-nextjs.md) smo izbrali en Next.js projekt za frontend in backend. Pri predmetu je zahtevano, da sta frontend in backend jasno ločena v svojih mapah (`frontend/` in `backend/`). Kako organizirati aplikacijo, da bo ločitev jasna, koda pa še vedno preprosta?
+GetAd potrebuje uporabniški vmesnik z ločenimi pogledi za podjetje, ustvarjalca in administratorja ter backend s poslovno logiko (stanja questov, preverjanje pravic, nalaganje videov). Pri predmetu je zahtevano, da sta frontend in backend jasno ločena v svojih mapah (`frontend/` in `backend/`). Kako organizirati aplikacijo, da bo ločitev jasna, koda pa še vedno preprosta?
 
 ## Dejavniki odločitve
 
@@ -19,7 +19,7 @@ V [ADR-0001](0001-en-projekt-nextjs.md) smo izbrali en Next.js projekt za fronte
 ## Obravnavane možnosti
 
 * Frontend React + Vite, backend Node.js + Express
-* Frontend Next.js, backend Node.js + Express
+* En projekt v Next.js (strani + API poti)
 * Frontend React, backend v drugem jeziku (npr. Python + FastAPI)
 
 ## Odločitev
@@ -41,10 +41,11 @@ Izbrana možnost: "Frontend React + Vite, backend Node.js + Express", ker oba de
 
 ## Prednosti in slabosti možnosti
 
-### Next.js + Express
+### En projekt v Next.js
 
-* Dobro, ker Next.js ponuja usmerjanje in strežniško izrisovanje.
-* Slabo, ker bi Next.js uporabljali le za prikaz, njegove posebnosti (strežniške komponente, App Router) pa bi po nepotrebnem zapletle kodo.
+* Dobro, ker sta frontend in backend v eni kodni bazi z enim ukazom za zagon.
+* Slabo, ker ne izpolnjuje zahteve po ločenem frontendu in backendu.
+* Slabo, ker ima Next.js veliko posebnosti (strežniške komponente, App Router), ki zapletejo kodo.
 
 ### React + Python
 
@@ -53,4 +54,4 @@ Izbrana možnost: "Frontend React + Vite, backend Node.js + Express", ker oba de
 
 ## Dodatne informacije
 
-Nadomešča [ADR-0001](0001-en-projekt-nextjs.md). Povezano: [0002 – React](0002-react-za-uporabniski-vmesnik.md), [0010 – Prijava z JWT](0010-prijava-z-jwt.md).
+Povezano: [0002 – React](0002-react-za-uporabniski-vmesnik.md), [0005 – Prijava z JWT](0005-prijava-z-jwt.md).
