@@ -1,0 +1,125 @@
+// Shema baze – tabele in polja so enaka kot v docs/03-podatkovni-model.md
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  company
+  creator
+  admin
+}
+
+enum QuestStatus {
+  draft
+  in_review
+  open
+  judging
+  closed
+}
+
+enum AssetType {
+  image
+  logo
+  other
+}
+
+enum SubmissionStatus {
+  pending
+  approved
+  rejected
+  withdrawn
+}
+
+// Vsi uporabniki sistema, vloga določa pravice
+model User {
+  id            Int      @id @default(autoincrement())
+  email         String   @unique
+  password_hash String
+  role          Role
+  display_name  String
+  is_blocked    Boolean  @default(false)
+  created_at    DateTime @default(now())
+
+  company     Company?
+  submissions Submission[]
+
+  @@map("users")
+}
+
+// Profil podjetja, samo za uporabnike z vlogo company
+model Company {
+  id          Int     @id @default(autoincrement())
+  user_id     Int     @unique
+  name        String
+  website     String?
+  logo_path   String?
+  description String?
+
+  user   User    @relation(fields: [user_id], references: [id])
+  quests Quest[]
+
+  @@map("companies")
+}
+
+// Natečaj, ki ga objavi podjetje
+model Quest {
+  id                   Int         @id @default(autoincrement())
+  company_id           Int
+  title                String
+  description          String
+  requirements         String
+  reward_amount        Decimal     @db.Decimal(10, 2)
+  deadline             DateTime
+  status               QuestStatus @default(draft)
+  rejection_reason     String?
+  winner_submission_id Int?        @unique
+  created_at           DateTime    @default(now())
+
+  company     Company      @relation(fields: [company_id], references: [id])
+  assets      QuestAsset[]
+  submissions Submission[] @relation("QuestSubmissions")
+  winner      Submission?  @relation("QuestWinner", fields: [winner_submission_id], references: [id])
+
+  @@map("quests")
+}
+
+// Referenčno gradivo questa (slike, logotip)
+model QuestAsset {
+  id            Int       @id @default(autoincrement())
+  quest_id      Int
+  file_path     String
+  type          AssetType
+  original_name String
+
+  quest Quest @relation(fields: [quest_id], references: [id])
+
+  @@map("quest_assets")
+}
+
+// Video, ki ga ustvarjalec odda na quest
+model Submission {
+  id               Int              @id @default(autoincrement())
+  quest_id         Int
+  creator_id       Int
+  title            String
+  description      String
+  ai_tool          String
+  video_path       String
+  status           SubmissionStatus @default(pending)
+  rejection_reason String?
+  created_at       DateTime         @default(now())
+
+  quest     Quest  @relation("QuestSubmissions", fields: [quest_id], references: [id])
+  creator   User   @relation(fields: [creator_id], references: [id])
+  won_quest Quest? @relation("QuestWinner")
+
+  // Ustvarjalec lahko na en quest odda samo eno oddajo (US-04)
+  @@unique([quest_id, creator_id])
+  @@map("submissions")
+}
