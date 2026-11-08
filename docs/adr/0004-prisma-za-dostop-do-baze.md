@@ -7,7 +7,7 @@ date: 2026-10-26
 
 ## Kontekst in opis problema
 
-Backend mora ustvariti tabele, jih spreminjati med razvojem in iz njih brati ter pisati podatke. Ročno pisanje SQL poizvedb in migracij je zamudno in odpira možnost napak ter SQL injekcij. Kako dostopati do baze PostgreSQL iz Next.js aplikacije?
+Backend mora ustvariti tabele, jih spreminjati med razvojem in iz njih brati ter pisati podatke. Ročno pisanje SQL poizvedb in migracij je zamudno in odpira možnost napak ter SQL injekcij. Kako dostopati do baze PostgreSQL iz backenda?
 
 ## Dejavniki odločitve
 

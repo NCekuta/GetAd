@@ -4,16 +4,16 @@
 
 #### Glavni deli sistema
 
-- **Spletna aplikacija (Next.js)** – en projekt, ki vsebuje frontend in backend.
-  - **Frontend** – strani v brskalniku z ločenimi pogledi za podjetje, ustvarjalca in administratorja.
-  - **Backend** – API poti, ki vsebujejo poslovno logiko, preverjajo pravice in upravljajo stanja questov.
+- **Frontend** (mapa `frontend/`) – React aplikacija (Vite), ki teče v brskalniku. Vsebuje ločene poglede za podjetje, ustvarjalca in administratorja.
+- **Backend** (mapa `backend/`) – Node.js strežnik z ogrodjem Express. Ponuja REST API, vsebuje poslovno logiko, preverja pravice in upravlja stanja questov.
 - **Podatkovna baza** – PostgreSQL.
-- **Hramba datotek** – mapa `uploads` v projektu za videe in slike.
+- **Hramba datotek** – mapa `backend/uploads` za videe in slike.
 
 #### Komunikacija
 
-- Frontend kliče backend prek HTTP zahtevkov na API poti (`/api/...`) v formatu JSON.
-- Nalaganje videov in slik poteka z zahtevki `multipart/form-data`. Backend datoteko prebere z vgrajeno funkcijo `request.formData()` v Next.js in jo shrani v mapo `uploads`
+- Frontend kliče backend prek HTTP zahtevkov na poti `/api/...` v formatu JSON.
+- Med razvojem Vite strežnik zahtevke na `/api` posreduje (proxy) na backend, zato ni treba nastavljati CORS.
+- Nalaganje videov in slik poteka z zahtevki `multipart/form-data`. Backend datoteko prebere s knjižnico **multer** in jo shrani v mapo `uploads`.
 - Backend dostopa do baze prek **Prisme**.
 - Datoteke iz mape `uploads` backend vrača prek API poti, pred tem preveri, ali ima uporabnik dostop.
 
@@ -27,65 +27,85 @@
 #### Avtentikacija in upravljanje uporabnikov
 
 - Uporabnik se registrira z e-pošto in geslom ter izbere vlogo (podjetje ali ustvarjalec).
-- Gesla so shranjena zgoščena z **bcrypt**.
-- Prijavo in seje upravlja **Auth.js**, seja je shranjena v šifriranem piškotku.
-- Pred vsako zaščiteno akcijo backend preveri sejo in vlogo uporabnika.
+- Gesla so shranjena zgoščena z **bcrypt** (`bcryptjs`).
+- Ob prijavi backend ustvari **JWT žeton** z `id` in vlogo uporabnika ter ga shrani v `httpOnly` piškotek.
+- Pred vsako zaščiteno akcijo backend (middleware) preveri žeton, blokado in vlogo uporabnika.
 - Administratorski račun se ustvari s seed skripto, registracija v vlogi administratorja ni mogoča.
 
 #### Lokalni zagon
 
 Predpogoja: nameščena Node.js in PostgreSQL.
 
-1. Kloniraj repozitorij in kopiraj `.env.example` v `.env` (povezava do baze in skrivni ključ za Auth.js).
+Backend:
+
+1. Kloniraj repozitorij, v mapi `backend` kopiraj `.env.example` v `.env` (povezava do baze in skrivni ključ za JWT).
 2. Zaženi PostgreSQL in ustvari prazno bazo `getad`.
-3. `npm install` – namesti knjižnice.
+3. `cd backend` in `npm install` – namesti knjižnice.
 4. `npx prisma migrate dev` – ustvari tabele v bazi.
 5. `npx prisma db seed` – ustvari administratorski račun in testne podatke.
-6. `npm run dev` – zažene aplikacijo na `http://localhost:3000`.
+6. `npm run dev` – zažene backend na `http://localhost:3000`.
+
+Frontend (v drugem terminalu):
+
+1. `cd frontend` in `npm install`.
+2. `npm run dev` – zažene frontend na `http://localhost:5173`.
 
 #### Diagram
 
 ```mermaid
 flowchart LR
     U[Uporabnik v brskalniku] -- HTTP --> F
-    subgraph N[Next.js aplikacija]
-        F[Frontend<br>strani React] -- JSON / FormData --> A[Backend<br>API poti]
-        A --- AU[Auth.js<br>prijava in seje]
+    F[Frontend<br>React + Vite] -- JSON / FormData<br>/api/... --> A
+    subgraph B[Backend - Express]
+        A[REST API<br>poti] --- AU[JWT<br>prijava in seje]
     end
     A -- Prisma --> D[(PostgreSQL)]
-    A -- datoteke --> S[/Mapa uploads<br>videi in slike/]
+    A -- multer --> S[/Mapa uploads<br>videi in slike/]
 ```
 
 ### 2. Tehnološki sklad
 
 | Del | Tehnologija |
 |---|---|
-| Frontend | Next.js (React), Tailwind CSS |
-| Backend | Next.js API poti (Node.js) |
+| Frontend | React, Vite, React Router, Tailwind CSS |
+| Backend | Node.js, Express |
 | Podatkovna baza | PostgreSQL, Prisma |
-| Avtentikacija | Auth.js, bcrypt |
-| Nalaganje datotek | vgrajena obdelava `FormData` v Next.js, mapa `uploads` |
+| Avtentikacija | JWT v `httpOnly` piškotku, bcrypt |
+| Nalaganje datotek | multer, mapa `uploads` |
 | Lokalni razvoj | Node.js, npm, lokalni PostgreSQL, Git |
 
 #### Knjižnice
 
+Frontend:
+
 | Knjižnica | Namen |
 |---|---|
-| `next`, `react`, `react-dom` | ogrodje aplikacije in uporabniški vmesnik |
+| `react`, `react-dom` | uporabniški vmesnik |
+| `vite` | razvojni strežnik in gradnja aplikacije |
+| `react-router-dom` | usmerjanje med stranmi |
 | `tailwindcss` | oblikovanje |
+
+Backend:
+
+| Knjižnica | Namen |
+|---|---|
+| `express` | strežnik in API poti |
 | `prisma`, `@prisma/client` | shema baze, migracije in poizvedbe |
-| `next-auth` (Auth.js) | prijava, odjava in seje |
+| `jsonwebtoken` | ustvarjanje in preverjanje JWT žetonov |
+| `cookie-parser` | branje piškotkov |
 | `bcryptjs` | kodiranje gesel |
+| `multer` | nalaganje datotek |
+| `dotenv` | branje nastavitev iz `.env` |
 
 ### 3. Arhitekturne odločitve
 
 Podrobna utemeljitev vsake odločitve je v [ADR zapisih](adr/).
 
-- **En projekt v Next.js** – frontend in backend v isti kodi, en jezik (JavaScript), en ukaz za zagon.
+- **Ločen frontend in backend** – frontend (React + Vite) in backend (Express) sta v ločenih mapah, oba v JavaScriptu. Nadomešča prvotno odločitev za en Next.js projekt.
 - **React** – razširjen in dobro dokumentiran, primeren za aplikacijo z več pogledi glede na vlogo.
 - **PostgreSQL** – podatki so povezani (podjetja, questi, oddaje), zato je relacijska baza naravna izbira. PostgreSQL je zanesljiv, brezplačen in ga uporablja tudi Supabase, zato je kasnejša selitev v oblak preprosta.
 - **Prisma** – tabele so opisane na enem mestu, migracije se ustvarijo samodejno, poizvedbe pa so pregledne in varne pred SQL injekcijami.
-- **Auth.js** – preverjena knjižnica za prijavo in seje
+- **Prijava z JWT** – preprosta prijava z žetonom v `httpOnly` piškotku. Nadomešča prvotno odločitev za Auth.js.
 - **Datoteke v lokalni mapi** – za lokalni razvoj najenostavnejše, ob objavi v oblak se zamenjajo s Supabase Storage.
 - **Preverjanje roka ob branju** – zapiranje questov deluje brez ločenega procesa, stanje pa je vedno pravilno, ko ga kdo pogleda.
-- **Pripravljeno za oblak** – aplikacija se lahko kasneje objavi na AWS Amplify, baza preseli v Supabase, datoteke pa v Supabase Storage. Ker Supabase uporablja PostgreSQL, se zamenja samo povezava do baze v `.env`, koda aplikacije pa ostane enaka.
+- **Pripravljeno za oblak** – frontend se lahko kasneje objavi na AWS Amplify, backend na storitvi za Node.js (npr. Render), baza se preseli v Supabase, datoteke pa v Supabase Storage. Ker Supabase uporablja PostgreSQL, se zamenja samo povezava do baze v `.env`, koda aplikacije pa ostane enaka.

@@ -47,4 +47,4 @@ Izbrana možnost: "React", ker je najbolj razširjen, ima največ dokumentacije 
 
 ## Dodatne informacije
 
-Povezano: [0001 – En projekt v Next.js](0001-en-projekt-nextjs.md).
+Povezano: [0001 – En projekt v Next.js](0001-en-projekt-nextjs.md). Next.js je kasneje zamenjal Vite, React ostaja ([0009](0009-locen-frontend-in-backend.md)).

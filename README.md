@@ -8,10 +8,10 @@ Uporabniške vloge: **podjetje**, **ustvarjalec** in **administrator**.
 
 | Del | Tehnologija |
 |---|---|
-| Frontend | Next.js (React), Tailwind CSS |
-| Backend | Next.js API poti (Node.js) |
+| Frontend | React, Vite, React Router, Tailwind CSS |
+| Backend | Node.js, Express |
 | Podatkovna baza | PostgreSQL, Prisma |
-| Avtentikacija | Auth.js, bcrypt |
+| Avtentikacija | JWT v piškotku, bcrypt |
 | Hramba datotek | lokalna mapa `uploads` (kasneje Supabase Storage) |
 
 ## Struktura repozitorija
@@ -20,8 +20,8 @@ Uporabniške vloge: **podjetje**, **ustvarjalec** in **administrator**.
 GetAd/
 ├── README.md
 ├── .gitignore
-├── frontend/
-├── backend/
+├── frontend/          React aplikacija (Vite)
+├── backend/           Express API, Prisma, mapa uploads
 └── docs/
     ├── 01-06 *.md     projektna dokumentacija
     ├── wireframes/    žičnati modeli zaslonov
@@ -40,14 +40,16 @@ GetAd/
 ### Arhitekturne odločitve (ADR)
 
 - [Predloga ADR](docs/adr/adr-template.md)
-- [0001 – En projekt v Next.js za frontend in backend](docs/adr/0001-en-projekt-nextjs.md)
+- [0001 – En projekt v Next.js za frontend in backend](docs/adr/0001-en-projekt-nextjs.md) *(nadomeščena z 0009)*
 - [0002 – React za uporabniški vmesnik](docs/adr/0002-react-za-uporabniski-vmesnik.md)
 - [0003 – PostgreSQL kot podatkovna baza](docs/adr/0003-postgresql-podatkovna-baza.md)
 - [0004 – Prisma za dostop do baze](docs/adr/0004-prisma-za-dostop-do-baze.md)
-- [0005 – Auth.js za avtentikacijo](docs/adr/0005-authjs-za-avtentikacijo.md)
+- [0005 – Auth.js za avtentikacijo](docs/adr/0005-authjs-za-avtentikacijo.md) *(nadomeščena z 0010)*
 - [0006 – Hramba datotek v lokalni mapi](docs/adr/0006-hramba-datotek-v-lokalni-mapi.md)
 - [0007 – Preverjanje roka ob branju](docs/adr/0007-preverjanje-roka-ob-branju.md)
 - [0008 – Pripravljenost za selitev v oblak](docs/adr/0008-pripravljenost-za-oblak.md)
+- [0009 – Ločen frontend (React + Vite) in backend (Express)](docs/adr/0009-locen-frontend-in-backend.md)
+- [0010 – Prijava z JWT žetonom v piškotku](docs/adr/0010-prijava-z-jwt.md)
 
 ## Razvojni proces
 

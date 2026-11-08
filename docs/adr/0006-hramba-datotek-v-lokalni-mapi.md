@@ -7,7 +7,7 @@ date: 2026-10-26
 
 ## Kontekst in opis problema
 
-Podjetja nalagajo referenčne slike in logotipe, ustvarjalci pa videe velikosti 100 MB in več. Datoteke morajo biti dostopne samo upravičenim uporabnikom (npr. oddaje so do zaključka questa skrite drugim ustvarjalcem). V fazi razvoja aplikacija teče samo lokalno. Kam shranjevati naložene datoteke?
+Podjetja nalagajo referenčne slike in logotipe, ustvarjalci pa videe velikosti do 100 MB. Datoteke morajo biti dostopne samo upravičenim uporabnikom (npr. oddaje so do zaključka questa skrite drugim ustvarjalcem). V fazi razvoja aplikacija teče samo lokalno. Kam shranjevati naložene datoteke?
 
 ## Dejavniki odločitve
 

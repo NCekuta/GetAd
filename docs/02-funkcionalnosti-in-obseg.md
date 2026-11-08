@@ -73,6 +73,7 @@
 
 - shranjevanje videov in slik v oblak (Supabase Storage) namesto v lokalno mapo,
 - objava celotne aplikacije v oblaku (AWS Amplify) in prenos baze v Supabase,
+- dvostopenjska prijava (2FA),
 - e-poštna obvestila,
 - statistika questa za podjetje (število oddaj, ogledov),
 - samodejno preverjanje formata videa (dolžina, razmerje slike),
