@@ -1,0 +1,23 @@
+import { Routes, Route } from 'react-router-dom';
+import Header from './components/Header.jsx';
+import Home from './pages/Home.jsx';
+import Login from './pages/Login.jsx';
+import Register from './pages/Register.jsx';
+import NotFound from './pages/NotFound.jsx';
+
+// Seznam vseh strani aplikacije
+export default function App() {
+  return (
+    <div className="min-h-screen bg-gray-50 text-gray-900">
+      <Header />
+      <main className="max-w-5xl mx-auto p-4">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/prijava" element={<Login />} />
+          <Route path="/registracija" element={<Register />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </main>
+    </div>
+  );
+}
