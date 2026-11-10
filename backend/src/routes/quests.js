@@ -57,6 +57,16 @@ router.post('/', requireAuth('company'), async (req, res) => {
   res.status(201).json(quest);
 });
 
+// Seznam questov prijavljenega podjetja, najnovejši prvi.
+// Mora biti pred potjo /:id, sicer bi Express "mine" razumel kot id.
+router.get('/mine', requireAuth('company'), async (req, res) => {
+  const quests = await prisma.quest.findMany({
+    where: { company: { user_id: req.user.id } },
+    orderBy: { created_at: 'desc' },
+  });
+  res.json(quests);
+});
+
 // Podatki o questu za urejanje (samo lastnik)
 router.get('/:id', requireAuth('company'), async (req, res) => {
   const quest = await findOwnQuest(req.params.id, req.user.id);
@@ -82,6 +92,27 @@ router.put('/:id', requireAuth('company'), async (req, res) => {
   }
 
   const updated = await prisma.quest.update({ where: { id: quest.id }, data });
+  res.json(updated);
+});
+
+// Pošiljanje v pregled adminu (US-02): draft -> in_review
+router.post('/:id/submit', requireAuth('company'), async (req, res) => {
+  const quest = await findOwnQuest(req.params.id, req.user.id);
+  if (!quest) {
+    return res.status(404).json({ error: 'Quest ne obstaja.' });
+  }
+  if (quest.status !== 'draft') {
+    return res.status(400).json({ error: 'V pregled je mogoče poslati samo osnutek.' });
+  }
+  // Osnutek je lahko star, zato rok preverimo še enkrat
+  if (quest.deadline < new Date(Date.now() + SEVEN_DAYS)) {
+    return res.status(400).json({ error: 'Rok mora biti vsaj 7 dni v prihodnosti. Uredi rok.' });
+  }
+
+  const updated = await prisma.quest.update({
+    where: { id: quest.id },
+    data: { status: 'in_review', rejection_reason: null }, // morebitni stari razlog zavrnitve izbrišemo
+  });
   res.json(updated);
 });
 

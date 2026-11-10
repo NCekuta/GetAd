@@ -12,6 +12,7 @@ export default function QuestForm() {
   const [form, setForm] = useState(emptyForm);
   const [status, setStatus] = useState('draft');
   const [images, setImages] = useState([]);
+  const [rejectionReason, setRejectionReason] = useState('');
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
 
@@ -37,6 +38,7 @@ export default function QuestForm() {
         });
         setStatus(data.status);
         setImages(data.assets);
+        setRejectionReason(data.rejection_reason);
       });
   }, [id]);
 
@@ -44,10 +46,13 @@ export default function QuestForm() {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
+  // Obrazec ima dva gumba: "Shrani osnutek" in "Pošlji v pregled".
+  // V obeh primerih quest najprej shranimo, pri drugem ga nato še pošljemo v pregled.
   async function handleSubmit(e) {
     e.preventDefault();
     setError('');
     setMessage('');
+    const sendToReview = e.nativeEvent.submitter.name === 'review';
 
     const res = await fetch(id ? `/api/quests/${id}` : '/api/quests', {
       method: id ? 'PUT' : 'POST',
@@ -58,6 +63,13 @@ export default function QuestForm() {
 
     if (!res.ok) {
       setError(data.error);
+    } else if (sendToReview) {
+      const submitRes = await fetch(`/api/quests/${data.id}/submit`, { method: 'POST' });
+      if (submitRes.ok) {
+        navigate('/moji-questi');
+      } else {
+        setError((await submitRes.json()).error);
+      }
     } else if (id) {
       setMessage('Osnutek shranjen.');
     } else {
@@ -72,6 +84,7 @@ export default function QuestForm() {
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">{id ? 'Urejanje questa' : 'Nov quest'}</h1>
+      {rejectionReason && <p className="text-red-600 mb-4">Admin je quest zavrnil: {rejectionReason}</p>}
 
       <div className="grid md:grid-cols-[3fr_2fr] gap-4 items-start">
         <form onSubmit={handleSubmit} className="bg-white border rounded p-4 flex flex-col gap-3">
@@ -104,9 +117,14 @@ export default function QuestForm() {
           {error && <p className="text-red-600">{error}</p>}
           {message && <p className="text-green-700">{message}</p>}
 
-          <button type="submit" className="self-start border-2 border-gray-800 rounded px-4 py-2 font-semibold hover:bg-gray-100">
-            Shrani osnutek
-          </button>
+          <div className="flex gap-3">
+            <button type="submit" name="save" className="border-2 border-gray-800 rounded px-4 py-2 font-semibold hover:bg-gray-100">
+              Shrani osnutek
+            </button>
+            <button type="submit" name="review" className="bg-gray-800 text-white rounded px-4 py-2 font-semibold hover:bg-gray-700">
+              Pošlji v pregled
+            </button>
+          </div>
         </form>
 
         {/* Slike lahko dodamo šele, ko quest obstaja v bazi */}
