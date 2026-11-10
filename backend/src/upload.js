@@ -6,7 +6,6 @@ import multer from 'multer';
 // Ob selitvi v oblak zamenjamo samo ta modul (npr. s Supabase Storage).
 
 const UPLOAD_DIR = path.join(import.meta.dirname, '..', 'uploads');
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 MB
 
 // Datoteke shranimo v mapo uploads z naključnim imenom, da se imena ne podvajajo
 const storage = multer.diskStorage({
@@ -17,33 +16,42 @@ const storage = multer.diskStorage({
   },
 });
 
-const imageUploader = multer({
-  storage,
-  limits: { fileSize: MAX_IMAGE_SIZE },
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
-      cb(null, true);
-    } else {
-      cb(new Error('Dovoljeni sta samo JPG in PNG.'));
-    }
-  },
-}).single('image'); // polje obrazca z imenom "image"
+// Ustvari middleware za nalaganje ene datoteke z dovoljenimi tipi in največjo velikostjo.
+// Napake vrne kot JSON, shranjena datoteka je potem v req.file.
+function singleFile(field, allowedTypes, maxMb, typeError) {
+  const uploader = multer({
+    storage,
+    limits: { fileSize: maxMb * 1024 * 1024 },
+    fileFilter: (req, file, cb) => {
+      if (allowedTypes.includes(file.mimetype)) {
+        cb(null, true);
+      } else {
+        cb(new Error(typeError));
+      }
+    },
+  }).single(field);
 
-// Middleware za nalaganje ene slike; napake vrne kot JSON
-export function uploadImage(req, res, next) {
-  imageUploader(req, res, (err) => {
-    if (err?.code === 'LIMIT_FILE_SIZE') {
-      return res.status(400).json({ error: 'Slika je večja od 5 MB.' });
-    }
-    if (err) {
-      return res.status(400).json({ error: err.message });
-    }
-    if (!req.file) {
-      return res.status(400).json({ error: 'Izberi sliko.' });
-    }
-    next();
-  });
+  return (req, res, next) => {
+    uploader(req, res, (err) => {
+      if (err?.code === 'LIMIT_FILE_SIZE') {
+        return res.status(400).json({ error: `Datoteka je večja od ${maxMb} MB.` });
+      }
+      if (err) {
+        return res.status(400).json({ error: err.message });
+      }
+      if (!req.file) {
+        return res.status(400).json({ error: 'Izberi datoteko.' });
+      }
+      next();
+    });
+  };
 }
+
+// Referenčna slika questa: JPG ali PNG, do 5 MB (US-02)
+export const uploadImage = singleFile('image', ['image/jpeg', 'image/png'], 5, 'Dovoljeni sta samo JPG in PNG.');
+
+// Video oddaje: MP4, do 100 MB (US-04)
+export const uploadVideo = singleFile('video', ['video/mp4'], 100, 'Dovoljen je samo video MP4.');
 
 // Polna pot do shranjene datoteke (za pošiljanje odjemalcu)
 export function filePath(name) {
