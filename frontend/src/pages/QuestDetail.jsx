@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../AuthContext.jsx';
-import { statusNames, submissionStatusNames } from '../questStatus.js';
+import { statusNames } from '../questStatus.js';
 import { timeLeft } from '../timeLeft.js';
 import SubmissionForm from '../components/SubmissionForm.jsx';
+import MySubmission from '../components/MySubmission.jsx';
 
 // Stran questa: opis, zahteve, nagrada, rok in slike (US-04, WF-02)
 export default function QuestDetail() {
@@ -67,31 +68,21 @@ export default function QuestDetail() {
         </div>
 
         {/* Desni stolpec samo za ustvarjalca: njegova oddaja ali obrazec za oddajo */}
-        {user.role === 'creator' && <CreatorPanel quest={quest} onSubmitted={(s) => setQuest({ ...quest, my_submission: s })} />}
+        {user.role === 'creator' && <CreatorPanel quest={quest} onChange={(s) => setQuest({ ...quest, my_submission: s })} />}
       </div>
     </div>
   );
 }
 
 // Oddaja ustvarjalca, sporočilo o poteku roka ali obrazec za oddajo
-function CreatorPanel({ quest, onSubmitted }) {
-  const submission = quest.my_submission;
-
-  if (submission) {
-    return (
-      <div className="bg-white border rounded p-4">
-        <h2 className="font-bold text-lg mb-1">Tvoja oddaja</h2>
-        <p className="font-semibold">{submission.title}</p>
-        <p className="text-sm text-gray-600">AI orodje: {submission.ai_tool}</p>
-        <p className="mt-2">Stanje: {submissionStatusNames[submission.status]}</p>
-        {submission.rejection_reason && <p className="text-red-600">Razlog: {submission.rejection_reason}</p>}
-      </div>
-    );
+function CreatorPanel({ quest, onChange }) {
+  if (quest.my_submission) {
+    return <MySubmission submission={quest.my_submission} questOpen={quest.status === 'open'} onChange={onChange} />;
   }
 
   if (quest.status !== 'open') {
     return <p className="bg-white border rounded p-4">Rok za oddajo je potekel.</p>;
   }
 
-  return <SubmissionForm questId={quest.id} onSubmitted={onSubmitted} />;
+  return <SubmissionForm questId={quest.id} onSubmitted={onChange} />;
 }
