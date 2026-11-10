@@ -5,6 +5,7 @@ import { statusNames } from '../questStatus.js';
 import { timeLeft } from '../timeLeft.js';
 import SubmissionForm from '../components/SubmissionForm.jsx';
 import MySubmission from '../components/MySubmission.jsx';
+import QuestCover from '../components/QuestCover.jsx';
 
 // Stran questa: opis, zahteve, nagrada, rok in slike (US-04, WF-02)
 export default function QuestDetail() {
@@ -24,16 +25,16 @@ export default function QuestDetail() {
 
   return (
     <div>
-      <div className="flex items-start mb-4">
+      <div className="flex flex-wrap items-start gap-4 mb-6">
         <div>
-          <span className="text-sm border rounded-full px-2">{statusNames[quest.status]}</span>
-          <h1 className="text-2xl font-bold">{quest.title}</h1>
-          <p className="text-gray-600">{quest.company.name}</p>
+          <span className="chip">{statusNames[quest.status]}</span>
+          <h1 className="font-hand text-4xl font-bold">{quest.title}</h1>
+          <p className="text-muted">{quest.company.name}</p>
         </div>
         <div className="ml-auto text-right">
-          <p className="text-2xl font-bold">{quest.reward_amount} €</p>
+          <p className="font-hand text-4xl font-bold text-accent">{quest.reward_amount} €</p>
           {/* Pri odprtem questu preostali čas do roka (US-06), sicer datum roka */}
-          <p>
+          <p className="text-muted">
             {quest.status === 'open'
               ? `še ${timeLeft(quest.deadline)}`
               : `rok ${new Date(quest.deadline).toLocaleDateString('sl-SI')}`}
@@ -43,37 +44,40 @@ export default function QuestDetail() {
 
       {/* Zmagovalec po izboru (US-07) */}
       {quest.winner && (
-        <p className="bg-green-50 border border-green-600 rounded p-3 mb-4">
+        <p className="card !border-accent mb-4">
           Zmagovalec: <strong>{quest.winner.title}</strong> ({quest.winner.creator.display_name})
         </p>
       )}
 
       {/* Lastnik questa lahko pogleda odobrene oddaje in izbere zmagovalca */}
       {quest.company.user_id === user.id && quest.status !== 'draft' && quest.status !== 'in_review' && (
-        <Link to={`/questi/${quest.id}/oddaje`} className="inline-block mb-4 bg-gray-800 text-white rounded px-4 py-2 hover:bg-gray-700">
+        <Link to={`/questi/${quest.id}/oddaje`} className="btn mb-4">
           {quest.status === 'judging' ? 'Izberi zmagovalca' : 'Oddaje'}
         </Link>
       )}
 
       <div className="grid md:grid-cols-[3fr_2fr] gap-4 items-start">
         <div className="flex flex-col gap-4">
-          <section className="bg-white border rounded p-4">
-            <h2 className="font-bold text-lg mb-1">Opis</h2>
+          <section className="card">
+            <h2 className="font-hand font-bold text-xl mb-1">Opis</h2>
             <p className="whitespace-pre-line">{quest.description}</p>
           </section>
 
-          <section className="bg-white border rounded p-4">
-            <h2 className="font-bold text-lg mb-1">Zahteve</h2>
+          <section className="card">
+            <h2 className="font-hand font-bold text-xl mb-1">Zahteve</h2>
             <p className="whitespace-pre-line">{quest.requirements}</p>
           </section>
 
+          {/* Brez referenčnih slik pokažemo privzeto ilustracijo */}
+          {quest.assets.length === 0 && <QuestCover quest={quest} className="h-48" />}
+
           {quest.assets.length > 0 && (
-            <section className="bg-white border rounded p-4">
-              <h2 className="font-bold text-lg mb-2">Referenčne slike</h2>
+            <section className="card">
+              <h2 className="font-hand font-bold text-xl mb-2">Referenčne slike</h2>
               <div className="grid grid-cols-3 gap-2">
                 {quest.assets.map((img) => (
                   <a key={img.id} href={`/api/quests/${quest.id}/images/${img.id}`} target="_blank">
-                    <img src={`/api/quests/${quest.id}/images/${img.id}`} alt={img.original_name} className="w-full h-28 object-cover border rounded" />
+                    <img src={`/api/quests/${quest.id}/images/${img.id}`} alt={img.original_name} className="w-full h-28 object-cover rounded-lg" />
                   </a>
                 ))}
               </div>
@@ -95,7 +99,7 @@ function CreatorPanel({ quest, onChange }) {
   }
 
   if (quest.status !== 'open') {
-    return <p className="bg-white border rounded p-4">Rok za oddajo je potekel.</p>;
+    return <p className="card">Rok za oddajo je potekel.</p>;
   }
 
   return <SubmissionForm questId={quest.id} onSubmitted={onChange} />;

@@ -83,45 +83,45 @@ export default function QuestForm() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">{id ? 'Urejanje questa' : 'Nov quest'}</h1>
-      {rejectionReason && <p className="text-red-600 mb-4">Admin je quest zavrnil: {rejectionReason}</p>}
+      <h1 className="font-hand text-4xl font-bold mb-4">{id ? 'Urejanje questa' : 'Nov quest'}</h1>
+      {rejectionReason && <p className="text-red-400 mb-4">Admin je quest zavrnil: {rejectionReason}</p>}
 
       <div className="grid md:grid-cols-[3fr_2fr] gap-4 items-start">
-        <form onSubmit={handleSubmit} className="bg-white border rounded p-4 flex flex-col gap-3">
+        <form onSubmit={handleSubmit} className="card flex flex-col gap-3">
           <label className="font-semibold">
             Naslov
-            <input name="title" value={form.title} onChange={handleChange} required className="block w-full border rounded p-2 font-normal" />
+            <input name="title" value={form.title} onChange={handleChange} required className="input" />
           </label>
 
           <label className="font-semibold">
             Opis
-            <textarea name="description" value={form.description} onChange={handleChange} required rows={4} className="block w-full border rounded p-2 font-normal" />
+            <textarea name="description" value={form.description} onChange={handleChange} required rows={4} className="input" />
           </label>
 
           <label className="font-semibold">
             Zahteve
-            <textarea name="requirements" value={form.requirements} onChange={handleChange} required rows={4} className="block w-full border rounded p-2 font-normal" />
+            <textarea name="requirements" value={form.requirements} onChange={handleChange} required rows={4} className="input" />
           </label>
 
           <div className="flex gap-4">
             <label className="font-semibold flex-1">
               Nagrada (€)
-              <input name="reward_amount" type="number" min="1" step="0.01" value={form.reward_amount} onChange={handleChange} required className="block w-full border rounded p-2 font-normal" />
+              <input name="reward_amount" type="number" min="1" step="0.01" value={form.reward_amount} onChange={handleChange} required className="input" />
             </label>
             <label className="font-semibold flex-1">
               Rok (vsaj 7 dni)
-              <input name="deadline" type="date" value={form.deadline} onChange={handleChange} required className="block w-full border rounded p-2 font-normal" />
+              <input name="deadline" type="date" value={form.deadline} onChange={handleChange} required className="input" />
             </label>
           </div>
 
-          {error && <p className="text-red-600">{error}</p>}
-          {message && <p className="text-green-700">{message}</p>}
+          {error && <p className="text-red-400">{error}</p>}
+          {message && <p className="text-accent">{message}</p>}
 
           <div className="flex gap-3">
-            <button type="submit" name="save" className="border-2 border-gray-800 rounded px-4 py-2 font-semibold hover:bg-gray-100">
+            <button type="submit" name="save" className="btn-outline">
               Shrani osnutek
             </button>
-            <button type="submit" name="review" className="bg-gray-800 text-white rounded px-4 py-2 font-semibold hover:bg-gray-700">
+            <button type="submit" name="review" className="btn">
               Pošlji v pregled
             </button>
           </div>
@@ -131,7 +131,7 @@ export default function QuestForm() {
         {id ? (
           <QuestImages questId={id} images={images} setImages={setImages} />
         ) : (
-          <p className="text-gray-500">Referenčne slike lahko dodaš, ko osnutek shraniš.</p>
+          <p className="text-muted">Referenčne slike lahko dodaš, ko osnutek shraniš.</p>
         )}
       </div>
     </div>
