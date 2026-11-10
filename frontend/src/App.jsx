@@ -9,6 +9,7 @@ import MyQuests from './pages/MyQuests.jsx';
 import AdminQuests from './pages/AdminQuests.jsx';
 import AdminSubmissions from './pages/AdminSubmissions.jsx';
 import QuestDetail from './pages/QuestDetail.jsx';
+import QuestSubmissions from './pages/QuestSubmissions.jsx';
 import NotFound from './pages/NotFound.jsx';
 
 // Seznam vseh strani aplikacije
@@ -29,6 +30,7 @@ export default function App() {
           <Route path="/moji-questi" element={<RequireRole roles={['company']}><MyQuests /></RequireRole>} />
           <Route path="/questi/nov" element={<RequireRole roles={['company']}><QuestForm /></RequireRole>} />
           <Route path="/questi/:id/uredi" element={<RequireRole roles={['company']}><QuestForm /></RequireRole>} />
+          <Route path="/questi/:id/oddaje" element={<RequireRole roles={['company']}><QuestSubmissions /></RequireRole>} />
 
           {/* Strani za administratorja */}
           <Route path="/admin/questi" element={<RequireRole roles={['admin']}><AdminQuests /></RequireRole>} />

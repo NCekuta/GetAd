@@ -90,7 +90,12 @@ router.get('/mine', requireAuth('company'), async (req, res) => {
 router.get('/:id', requireAuth(), async (req, res) => {
   const quest = await prisma.quest.findUnique({
     where: { id: Number(req.params.id) },
-    include: { company: true, assets: true },
+    include: {
+      company: true,
+      assets: true,
+      // zmagovalna oddaja z imenom avtorja (US-07)
+      winner: { select: { id: true, title: true, creator: { select: { display_name: true } } } },
+    },
   });
   if (!quest || !canViewQuest(quest, req.user)) {
     return res.status(404).json({ error: 'Quest ne obstaja.' });
@@ -257,5 +262,47 @@ router.post(
     res.status(201).json(submission);
   }
 );
+
+// Odobrene oddaje na questu za podjetje (US-07, WF-04).
+// Podjetje vidi samo odobrene oddaje (US-05) in samo na svojih questih.
+router.get('/:id/submissions', requireAuth('company'), async (req, res) => {
+  const quest = await findOwnQuest(req.params.id, req.user.id);
+  if (!quest) {
+    return res.status(404).json({ error: 'Quest ne obstaja.' });
+  }
+
+  const submissions = await prisma.submission.findMany({
+    where: { quest_id: quest.id, status: 'approved' },
+    include: { creator: { select: { display_name: true } } },
+    orderBy: { created_at: 'asc' },
+  });
+  res.json(submissions);
+});
+
+// Izbor zmagovalca (US-07): samo lastnik, quest v stanju judging, samo odobrena oddaja.
+// Quest ob tem preide v closed, izbire ni mogoče razveljaviti.
+router.post('/:id/winner', requireAuth('company'), async (req, res) => {
+  const quest = await findOwnQuest(req.params.id, req.user.id);
+  if (!quest) {
+    return res.status(404).json({ error: 'Quest ne obstaja.' });
+  }
+  if (quest.status !== 'judging') {
+    return res.status(400).json({ error: 'Zmagovalca je mogoče izbrati samo enkrat in šele po izteku roka.' });
+  }
+
+  // Oddaja mora obstajati, biti na tem questu in biti odobrena
+  const submission = await prisma.submission.findFirst({
+    where: { id: Number(req.body.submission_id) || 0, quest_id: quest.id, status: 'approved' },
+  });
+  if (!submission) {
+    return res.status(400).json({ error: 'Izbrati je mogoče samo odobreno oddajo na tem questu.' });
+  }
+
+  const updated = await prisma.quest.update({
+    where: { id: quest.id },
+    data: { status: 'closed', winner_submission_id: submission.id },
+  });
+  res.json(updated);
+});
 
 export default router;
