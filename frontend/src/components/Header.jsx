@@ -19,6 +19,7 @@ export default function Header() {
         <Link to="/" className="text-xl font-bold">GetAd</Link>
         <Link to="/" className="hover:underline">Questi</Link>
         {user?.role === 'company' && <Link to="/moji-questi" className="hover:underline">Moji questi</Link>}
+        {user?.role === 'admin' && <Link to="/admin/questi" className="hover:underline">Pregled questov</Link>}
 
         <div className="ml-auto flex items-center gap-4">
           {user ? (
