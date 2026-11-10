@@ -7,6 +7,7 @@ import Register from './pages/Register.jsx';
 import QuestForm from './pages/QuestForm.jsx';
 import MyQuests from './pages/MyQuests.jsx';
 import AdminQuests from './pages/AdminQuests.jsx';
+import AdminSubmissions from './pages/AdminSubmissions.jsx';
 import QuestDetail from './pages/QuestDetail.jsx';
 import NotFound from './pages/NotFound.jsx';
 
@@ -31,6 +32,7 @@ export default function App() {
 
           {/* Strani za administratorja */}
           <Route path="/admin/questi" element={<RequireRole roles={['admin']}><AdminQuests /></RequireRole>} />
+          <Route path="/admin/oddaje" element={<RequireRole roles={['admin']}><AdminSubmissions /></RequireRole>} />
 
           <Route path="*" element={<NotFound />} />
         </Routes>
