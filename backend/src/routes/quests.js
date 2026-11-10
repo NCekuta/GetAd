@@ -51,8 +51,9 @@ function canViewQuest(quest, user) {
 }
 
 // Seznam odprtih questov (US-04, WF-01), najnovejši prvi.
+// Vidijo ga ustvarjalci in admin; podjetje ima samo svoje queste (/mine).
 // Za kartico potrebujemo ime podjetja in prvo sliko.
-router.get('/', requireAuth(), async (req, res) => {
+router.get('/', requireAuth('creator', 'admin'), async (req, res) => {
   const quests = await prisma.quest.findMany({
     where: { status: 'open' },
     include: { company: { select: { name: true } }, assets: { take: 1 } },

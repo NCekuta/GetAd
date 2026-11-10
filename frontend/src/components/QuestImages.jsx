@@ -34,23 +34,23 @@ export default function QuestImages({ questId, images, setImages }) {
   }
 
   return (
-    <div className="bg-white border rounded p-4">
-      <h2 className="font-bold text-lg mb-2">Referenčne slike</h2>
+    <div className="card">
+      <h2 className="font-hand font-bold text-xl mb-2">Referenčne slike</h2>
 
       {images.length < MAX_IMAGES && (
-        <label className="block border-2 border-dashed rounded p-4 text-center text-gray-500 cursor-pointer hover:bg-gray-50">
+        <label className="block border-[1.5px] border-dashed border-muted/50 rounded-lg p-4 text-center text-muted cursor-pointer hover:border-accent hover:text-accent">
           Dodaj sliko (JPG ali PNG, do 5 MB, največ {MAX_IMAGES})
           <input type="file" accept=".jpg,.jpeg,.png" onChange={handleUpload} className="hidden" />
         </label>
       )}
 
-      {error && <p className="text-red-600 mt-2">{error}</p>}
+      {error && <p className="text-red-400 mt-2">{error}</p>}
 
       <div className="grid grid-cols-3 gap-2 mt-3">
         {images.map((img) => (
           <div key={img.id} className="text-center">
-            <img src={`/api/quests/${questId}/images/${img.id}`} alt={img.original_name} className="w-full h-24 object-cover border rounded" />
-            <button type="button" onClick={() => handleDelete(img.id)} className="text-sm text-red-600 hover:underline">
+            <img src={`/api/quests/${questId}/images/${img.id}`} alt={img.original_name} className="w-full h-24 object-cover rounded-lg" />
+            <button type="button" onClick={() => handleDelete(img.id)} className="text-sm text-red-400 hover:underline">
               Odstrani
             </button>
           </div>

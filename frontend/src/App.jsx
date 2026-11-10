@@ -15,9 +15,9 @@ import NotFound from './pages/NotFound.jsx';
 // Seznam vseh strani aplikacije
 export default function App() {
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900">
+    <div className="min-h-screen bg-paper text-ink font-sans">
       <Header />
-      <main className="max-w-5xl mx-auto p-4">
+      <main className="max-w-6xl mx-auto px-4 py-10">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/prijava" element={<Login />} />

@@ -1,10 +1,17 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import Doodle, { Scribble } from '../components/Doodle.jsx';
 
-// Stran za registracijo (US-01)
+// Vloge, med katerimi uporabnik izbira s klikom na kartico
+const roles = [
+  { role: 'creator', title: 'Ustvarjalec', text: 'Ustvarjaš AI video oglase in se poteguješ za nagrade.', doodle: 'camera' },
+  { role: 'company', title: 'Podjetje', text: 'Objaviš quest in izbereš najboljši video za svoj oglas.', doodle: 'phone' },
+];
+
+// Stran za registracijo (US-01): najprej izbira vloge, nato obrazec
 export default function Register() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ display_name: '', email: '', password: '', role: 'creator' });
+  const [form, setForm] = useState({ display_name: '', email: '', password: '', role: '' });
   const [error, setError] = useState('');
 
   // Ob spremembi polja posodobimo ustrezno vrednost v obrazcu
@@ -30,55 +37,64 @@ export default function Register() {
     }
   }
 
-  return (
-    <div className="max-w-sm mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Registracija</h1>
+  // 1. korak: izbira vloge
+  if (!form.role) {
+    return (
+      <div className="max-w-3xl mx-auto">
+        <h1 className="font-hand font-bold text-5xl">Registracija</h1>
+        <Scribble className="w-56 h-3 text-line mb-2" />
+        <p className="text-muted mb-8">Kdo si?</p>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-        <div className="flex gap-4">
-          <label>
-            <input type="radio" name="role" value="creator" checked={form.role === 'creator'} onChange={handleChange} />{' '}
-            Ustvarjalec
-          </label>
-          <label>
-            <input type="radio" name="role" value="company" checked={form.role === 'company'} onChange={handleChange} />{' '}
-            Podjetje
-          </label>
+        <div className="grid sm:grid-cols-2 gap-6">
+          {roles.map((r) => (
+            <button
+              key={r.role}
+              type="button"
+              onClick={() => setForm({ ...form, role: r.role })}
+              className="card p-6 flex flex-col items-center text-center gap-3 cursor-pointer hover:border-accent"
+            >
+              <Doodle name={r.doodle} className="h-28 text-line" />
+              <span className="font-hand font-bold text-3xl">{r.title}</span>
+              <span className="text-muted">{r.text}</span>
+            </button>
+          ))}
         </div>
 
-        <input
-          name="display_name"
-          placeholder={form.role === 'company' ? 'Ime podjetja' : 'Prikazno ime'}
-          value={form.display_name}
-          onChange={handleChange}
-          required
-          className="border rounded p-2"
-        />
-        <input
-          name="email"
-          type="email"
-          placeholder="E-pošta"
-          value={form.email}
-          onChange={handleChange}
-          required
-          className="border rounded p-2"
-        />
-        <input
-          name="password"
-          type="password"
-          placeholder="Geslo (vsaj 8 znakov)"
-          value={form.password}
-          onChange={handleChange}
-          minLength={8}
-          required
-          className="border rounded p-2"
-        />
+        <p className="mt-6 text-sm text-muted">
+          Že imaš račun? <Link to="/prijava" className="text-accent hover:underline">Prijavi se</Link>
+        </p>
+      </div>
+    );
+  }
 
-        {error && <p className="text-red-600">{error}</p>}
+  // 2. korak: obrazec za izbrano vlogo
+  const isCompany = form.role === 'company';
 
-        <button type="submit" className="bg-blue-600 text-white rounded p-2 hover:bg-blue-700">
-          Ustvari račun
-        </button>
+  return (
+    <div className="max-w-sm mx-auto">
+      <h1 className="font-hand font-bold text-5xl">{isCompany ? 'Podjetje' : 'Ustvarjalec'}</h1>
+      <Scribble className="w-48 h-3 text-line mb-2" />
+      <button type="button" onClick={() => setForm({ ...form, role: '' })} className="text-sm text-muted hover:text-accent mb-6">
+        ← zamenjaj vlogo
+      </button>
+
+      <form onSubmit={handleSubmit} className="card p-6 flex flex-col gap-4">
+        <label>
+          {isCompany ? 'Ime podjetja' : 'Prikazno ime'}
+          <input name="display_name" value={form.display_name} onChange={handleChange} required className="input" />
+        </label>
+        <label>
+          E-pošta
+          <input name="email" type="email" value={form.email} onChange={handleChange} required className="input" />
+        </label>
+        <label>
+          Geslo (vsaj 8 znakov)
+          <input name="password" type="password" value={form.password} onChange={handleChange} minLength={8} required className="input" />
+        </label>
+
+        {error && <p className="text-red-400">{error}</p>}
+
+        <button type="submit" className="btn">Ustvari račun</button>
       </form>
     </div>
   );

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../AuthContext.jsx';
+import { Scribble } from '../components/Doodle.jsx';
 
 // Stran za prijavo (US-01)
 export default function Login() {
@@ -22,36 +23,27 @@ export default function Login() {
 
   return (
     <div className="max-w-sm mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Prijava</h1>
+      <h1 className="font-hand font-bold text-5xl">Prijava</h1>
+      <Scribble className="w-40 h-3 text-line mb-6" />
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-        <input
-          type="email"
-          placeholder="E-pošta"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          className="border rounded p-2"
-        />
-        <input
-          type="password"
-          placeholder="Geslo"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          className="border rounded p-2"
-        />
+      <form onSubmit={handleSubmit} className="card p-6 flex flex-col gap-4">
+        <label>
+          E-pošta
+          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="input" />
+        </label>
+        <label>
+          Geslo
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="input" />
+        </label>
 
-        {error && <p className="text-red-600">{error}</p>}
+        {error && <p className="text-red-400">{error}</p>}
 
-        <button type="submit" className="bg-blue-600 text-white rounded p-2 hover:bg-blue-700">
-          Prijava
-        </button>
+        <button type="submit" className="btn">Prijava</button>
       </form>
 
-      <p className="mt-4 text-sm">
+      <p className="mt-4 text-sm text-muted">
         Nimaš računa?{' '}
-        <Link to="/registracija" className="text-blue-600 hover:underline">Registriraj se</Link>
+        <Link to="/registracija" className="text-accent hover:underline">Registriraj se</Link>
       </p>
     </div>
   );

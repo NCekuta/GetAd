@@ -49,45 +49,45 @@ export default function MySubmission({ submission, questOpen, onChange }) {
 
   if (editing) {
     return (
-      <form onSubmit={handleSave} className="bg-white border rounded p-4 flex flex-col gap-3">
-        <h2 className="font-bold text-lg">Uredi oddajo</h2>
+      <form onSubmit={handleSave} className="card flex flex-col gap-3">
+        <h2 className="font-hand font-bold text-xl">Uredi oddajo</h2>
         <label className="font-semibold">
           Naslov
-          <input name="title" value={form.title} onChange={handleChange} required className="block w-full border rounded p-2 font-normal" />
+          <input name="title" value={form.title} onChange={handleChange} required className="input" />
         </label>
         <label className="font-semibold">
           Opis
-          <textarea name="description" value={form.description} onChange={handleChange} required rows={4} className="block w-full border rounded p-2 font-normal" />
+          <textarea name="description" value={form.description} onChange={handleChange} required rows={4} className="input" />
         </label>
         <label className="font-semibold">
           AI orodje
-          <input name="ai_tool" value={form.ai_tool} onChange={handleChange} required className="block w-full border rounded p-2 font-normal" />
+          <input name="ai_tool" value={form.ai_tool} onChange={handleChange} required className="input" />
         </label>
-        <p className="text-sm text-gray-600">Po shranjevanju gre oddaja ponovno v pregled.</p>
-        {error && <p className="text-red-600">{error}</p>}
+        <p className="text-sm text-muted">Po shranjevanju gre oddaja ponovno v pregled.</p>
+        {error && <p className="text-red-400">{error}</p>}
         <div className="flex gap-2">
-          <button type="submit" className="bg-gray-800 text-white rounded px-4 py-2 hover:bg-gray-700">Shrani</button>
-          <button type="button" onClick={() => setEditing(false)} className="border rounded px-4 py-2 hover:bg-gray-100">Prekliči</button>
+          <button type="submit" className="btn">Shrani</button>
+          <button type="button" onClick={() => setEditing(false)} className="btn-outline">Prekliči</button>
         </div>
       </form>
     );
   }
 
   return (
-    <div className="bg-white border rounded p-4">
-      <h2 className="font-bold text-lg mb-1">Tvoja oddaja</h2>
+    <div className="card">
+      <h2 className="font-hand font-bold text-xl mb-1">Tvoja oddaja</h2>
       <video src={`/api/submissions/${submission.id}/video`} controls className="w-full rounded mb-2 bg-black" />
       <p className="font-semibold">{submission.title}</p>
       <p className="whitespace-pre-line">{submission.description}</p>
-      <p className="text-sm text-gray-600">AI orodje: {submission.ai_tool}</p>
+      <p className="text-sm text-muted">AI orodje: {submission.ai_tool}</p>
       <p className="mt-2">Stanje: {submissionStatusNames[submission.status]}</p>
-      {submission.rejection_reason && <p className="text-red-600">Razlog: {submission.rejection_reason}</p>}
-      {error && <p className="text-red-600">{error}</p>}
+      {submission.rejection_reason && <p className="text-red-400">Razlog: {submission.rejection_reason}</p>}
+      {error && <p className="text-red-400">{error}</p>}
 
       {canChange && (
         <div className="flex gap-2 mt-3">
-          <button onClick={() => setEditing(true)} className="border rounded px-4 py-2 hover:bg-gray-100">Uredi</button>
-          <button onClick={handleWithdraw} className="border border-red-600 text-red-600 rounded px-4 py-2 hover:bg-red-50">Umakni</button>
+          <button onClick={() => setEditing(true)} className="btn-outline">Uredi</button>
+          <button onClick={handleWithdraw} className="btn-danger">Umakni</button>
         </div>
       )}
     </div>
