@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../AuthContext.jsx';
 import { statusNames } from '../questStatus.js';
 import { timeLeft } from '../timeLeft.js';
@@ -40,6 +40,20 @@ export default function QuestDetail() {
           </p>
         </div>
       </div>
+
+      {/* Zmagovalec po izboru (US-07) */}
+      {quest.winner && (
+        <p className="bg-green-50 border border-green-600 rounded p-3 mb-4">
+          Zmagovalec: <strong>{quest.winner.title}</strong> ({quest.winner.creator.display_name})
+        </p>
+      )}
+
+      {/* Lastnik questa lahko pogleda odobrene oddaje in izbere zmagovalca */}
+      {quest.company.user_id === user.id && quest.status !== 'draft' && quest.status !== 'in_review' && (
+        <Link to={`/questi/${quest.id}/oddaje`} className="inline-block mb-4 bg-gray-800 text-white rounded px-4 py-2 hover:bg-gray-700">
+          {quest.status === 'judging' ? 'Izberi zmagovalca' : 'Oddaje'}
+        </Link>
+      )}
 
       <div className="grid md:grid-cols-[3fr_2fr] gap-4 items-start">
         <div className="flex flex-col gap-4">

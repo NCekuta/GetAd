@@ -68,6 +68,13 @@ export default function MyQuests() {
                 </button>
               </div>
             )}
+
+            {/* Objavljen quest: ogled odobrenih oddaj in izbor zmagovalca (US-07) */}
+            {['open', 'judging', 'closed'].includes(quest.status) && (
+              <Link to={`/questi/${quest.id}/oddaje`} className="inline-block mt-3 border rounded px-3 py-1 hover:bg-gray-100">
+                {quest.status === 'judging' ? 'Izberi zmagovalca' : 'Oddaje'}
+              </Link>
+            )}
           </div>
         ))}
       </div>
