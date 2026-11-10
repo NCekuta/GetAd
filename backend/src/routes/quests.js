@@ -42,6 +42,25 @@ async function findOwnQuest(questId, userId) {
   return quest;
 }
 
+// Ali sme uporabnik videti quest: objavljenega vsi prijavljeni,
+// osnutek in quest v pregledu pa samo lastnik in administrator
+function canViewQuest(quest, user) {
+  const isOwner = quest.company.user_id === user.id;
+  const isPublished = ['open', 'judging', 'closed'].includes(quest.status);
+  return isOwner || isPublished || user.role === 'admin';
+}
+
+// Seznam odprtih questov (US-04, WF-01), najnovejši prvi.
+// Za kartico potrebujemo ime podjetja in prvo sliko.
+router.get('/', requireAuth(), async (req, res) => {
+  const quests = await prisma.quest.findMany({
+    where: { status: 'open' },
+    include: { company: { select: { name: true } }, assets: { take: 1 } },
+    orderBy: { created_at: 'desc' },
+  });
+  res.json(quests);
+});
+
 // Ustvarjanje questa – shrani se kot osnutek (draft)
 router.post('/', requireAuth('company'), async (req, res) => {
   const { error, data } = readQuestForm(req.body);
@@ -67,10 +86,13 @@ router.get('/mine', requireAuth('company'), async (req, res) => {
   res.json(quests);
 });
 
-// Podatki o questu za urejanje (samo lastnik)
-router.get('/:id', requireAuth('company'), async (req, res) => {
-  const quest = await findOwnQuest(req.params.id, req.user.id);
-  if (!quest) {
+// Podrobnosti questa (WF-02) – uporablja jih tudi obrazec za urejanje
+router.get('/:id', requireAuth(), async (req, res) => {
+  const quest = await prisma.quest.findUnique({
+    where: { id: Number(req.params.id) },
+    include: { company: true, assets: true },
+  });
+  if (!quest || !canViewQuest(quest, req.user)) {
     return res.status(404).json({ error: 'Quest ne obstaja.' });
   }
   res.json(quest);
@@ -149,7 +171,7 @@ router.post(
   }
 );
 
-// Prikaz slike: lastnik in admin vedno, ostali prijavljeni samo pri objavljenem questu
+// Prikaz slike – enaka pravila kot za ogled questa
 router.get('/:id/images/:assetId', requireAuth(), async (req, res) => {
   const asset = await prisma.questAsset.findUnique({
     where: { id: Number(req.params.assetId) },
@@ -159,9 +181,7 @@ router.get('/:id/images/:assetId', requireAuth(), async (req, res) => {
     return res.status(404).json({ error: 'Slika ne obstaja.' });
   }
 
-  const isOwner = asset.quest.company.user_id === req.user.id;
-  const isPublished = ['open', 'judging', 'closed'].includes(asset.quest.status);
-  if (!isOwner && !isPublished && req.user.role !== 'admin') {
+  if (!canViewQuest(asset.quest, req.user)) {
     return res.status(404).json({ error: 'Slika ne obstaja.' });
   }
 
