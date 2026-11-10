@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import QuestImages from '../components/QuestImages.jsx';
 
 const emptyForm = { title: '', description: '', requirements: '', reward_amount: '', deadline: '' };
 
@@ -10,6 +11,7 @@ export default function QuestForm() {
   const navigate = useNavigate();
   const [form, setForm] = useState(emptyForm);
   const [status, setStatus] = useState('draft');
+  const [images, setImages] = useState([]);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
 
@@ -34,6 +36,7 @@ export default function QuestForm() {
           deadline: data.deadline.slice(0, 10), // samo datum (LLLL-MM-DD)
         });
         setStatus(data.status);
+        setImages(data.assets);
       });
   }, [id]);
 
@@ -67,43 +70,52 @@ export default function QuestForm() {
   }
 
   return (
-    <div className="max-w-2xl">
+    <div>
       <h1 className="text-2xl font-bold mb-4">{id ? 'Urejanje questa' : 'Nov quest'}</h1>
 
-      <form onSubmit={handleSubmit} className="bg-white border rounded p-4 flex flex-col gap-3">
-        <label className="font-semibold">
-          Naslov
-          <input name="title" value={form.title} onChange={handleChange} required className="block w-full border rounded p-2 font-normal" />
-        </label>
-
-        <label className="font-semibold">
-          Opis
-          <textarea name="description" value={form.description} onChange={handleChange} required rows={4} className="block w-full border rounded p-2 font-normal" />
-        </label>
-
-        <label className="font-semibold">
-          Zahteve
-          <textarea name="requirements" value={form.requirements} onChange={handleChange} required rows={4} className="block w-full border rounded p-2 font-normal" />
-        </label>
-
-        <div className="flex gap-4">
-          <label className="font-semibold flex-1">
-            Nagrada (€)
-            <input name="reward_amount" type="number" min="1" step="0.01" value={form.reward_amount} onChange={handleChange} required className="block w-full border rounded p-2 font-normal" />
+      <div className="grid md:grid-cols-[3fr_2fr] gap-4 items-start">
+        <form onSubmit={handleSubmit} className="bg-white border rounded p-4 flex flex-col gap-3">
+          <label className="font-semibold">
+            Naslov
+            <input name="title" value={form.title} onChange={handleChange} required className="block w-full border rounded p-2 font-normal" />
           </label>
-          <label className="font-semibold flex-1">
-            Rok (vsaj 7 dni)
-            <input name="deadline" type="date" value={form.deadline} onChange={handleChange} required className="block w-full border rounded p-2 font-normal" />
+
+          <label className="font-semibold">
+            Opis
+            <textarea name="description" value={form.description} onChange={handleChange} required rows={4} className="block w-full border rounded p-2 font-normal" />
           </label>
-        </div>
 
-        {error && <p className="text-red-600">{error}</p>}
-        {message && <p className="text-green-700">{message}</p>}
+          <label className="font-semibold">
+            Zahteve
+            <textarea name="requirements" value={form.requirements} onChange={handleChange} required rows={4} className="block w-full border rounded p-2 font-normal" />
+          </label>
 
-        <button type="submit" className="self-start border-2 border-gray-800 rounded px-4 py-2 font-semibold hover:bg-gray-100">
-          Shrani osnutek
-        </button>
-      </form>
+          <div className="flex gap-4">
+            <label className="font-semibold flex-1">
+              Nagrada (€)
+              <input name="reward_amount" type="number" min="1" step="0.01" value={form.reward_amount} onChange={handleChange} required className="block w-full border rounded p-2 font-normal" />
+            </label>
+            <label className="font-semibold flex-1">
+              Rok (vsaj 7 dni)
+              <input name="deadline" type="date" value={form.deadline} onChange={handleChange} required className="block w-full border rounded p-2 font-normal" />
+            </label>
+          </div>
+
+          {error && <p className="text-red-600">{error}</p>}
+          {message && <p className="text-green-700">{message}</p>}
+
+          <button type="submit" className="self-start border-2 border-gray-800 rounded px-4 py-2 font-semibold hover:bg-gray-100">
+            Shrani osnutek
+          </button>
+        </form>
+
+        {/* Slike lahko dodamo šele, ko quest obstaja v bazi */}
+        {id ? (
+          <QuestImages questId={id} images={images} setImages={setImages} />
+        ) : (
+          <p className="text-gray-500">Referenčne slike lahko dodaš, ko osnutek shraniš.</p>
+        )}
+      </div>
     </div>
   );
 }
