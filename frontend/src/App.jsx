@@ -1,8 +1,10 @@
 import { Routes, Route } from 'react-router-dom';
 import Header from './components/Header.jsx';
+import RequireRole from './components/RequireRole.jsx';
 import Home from './pages/Home.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
+import QuestForm from './pages/QuestForm.jsx';
 import NotFound from './pages/NotFound.jsx';
 
 // Seznam vseh strani aplikacije
@@ -15,6 +17,11 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/prijava" element={<Login />} />
           <Route path="/registracija" element={<Register />} />
+
+          {/* Strani za podjetje */}
+          <Route path="/questi/nov" element={<RequireRole roles={['company']}><QuestForm /></RequireRole>} />
+          <Route path="/questi/:id/uredi" element={<RequireRole roles={['company']}><QuestForm /></RequireRole>} />
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
