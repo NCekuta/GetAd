@@ -43,7 +43,7 @@ export default function MyQuests() {
         {quests.map((quest) => (
           <div key={quest.id} className="bg-white border rounded p-4">
             <div className="flex items-center gap-4">
-              <h2 className="font-bold text-lg">{quest.title}</h2>
+              <Link to={`/questi/${quest.id}`} className="font-bold text-lg hover:underline">{quest.title}</Link>
               <span className="text-sm bg-gray-100 border rounded px-2">{statusNames[quest.status]}</span>
               <span className="ml-auto text-sm text-gray-600">
                 {quest.reward_amount} € · rok {new Date(quest.deadline).toLocaleDateString('sl-SI')}

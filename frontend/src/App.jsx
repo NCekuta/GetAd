@@ -7,6 +7,7 @@ import Register from './pages/Register.jsx';
 import QuestForm from './pages/QuestForm.jsx';
 import MyQuests from './pages/MyQuests.jsx';
 import AdminQuests from './pages/AdminQuests.jsx';
+import QuestDetail from './pages/QuestDetail.jsx';
 import NotFound from './pages/NotFound.jsx';
 
 // Seznam vseh strani aplikacije
@@ -19,6 +20,9 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/prijava" element={<Login />} />
           <Route path="/registracija" element={<Register />} />
+
+          {/* Stran questa za vse prijavljene uporabnike */}
+          <Route path="/questi/:id" element={<RequireRole roles={['company', 'creator', 'admin']}><QuestDetail /></RequireRole>} />
 
           {/* Strani za podjetje */}
           <Route path="/moji-questi" element={<RequireRole roles={['company']}><MyQuests /></RequireRole>} />
