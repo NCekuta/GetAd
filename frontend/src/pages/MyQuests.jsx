@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { statusNames } from '../questStatus.js';
+import { timeLeft } from '../timeLeft.js';
 
 // Seznam questov podjetja s stanjem in pošiljanjem v pregled (US-02)
 export default function MyQuests() {
@@ -48,6 +49,9 @@ export default function MyQuests() {
                 {quest.reward_amount} € · rok {new Date(quest.deadline).toLocaleDateString('sl-SI')}
               </span>
             </div>
+
+            {/* Preostali čas do roka pri odprtem questu (US-06) */}
+            {quest.status === 'open' && <p className="text-sm mt-2">Do roka: {timeLeft(quest.deadline)}</p>}
 
             {/* Razlog, če je admin quest zavrnil (US-03) */}
             {quest.rejection_reason && (
