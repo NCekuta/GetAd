@@ -28,6 +28,59 @@ GetAd/
     └── adr/           arhitekturne odločitve (ADR)
 ```
 
+## Lokalni zagon
+
+### Potrebna orodja
+
+- [Node.js](https://nodejs.org/) 24 ali novejši
+- [PostgreSQL](https://www.postgresql.org/) 17 (lokalno, privzeta vrata `5432`)
+
+### 1. Backend
+
+```bash
+cd backend
+npm install
+```
+
+Kopiraj `.env.example` v `.env` in po potrebi popravi vrednosti (uporabnik in geslo za PostgreSQL ter poljuben dolg `JWT_SECRET`).
+
+Ob prvem zagonu ustvari tabele v bazi in testne podatke:
+
+```bash
+npx prisma migrate dev    # ustvari bazo getad in tabele
+npx prisma db seed        # doda testne uporabnike
+```
+
+Zagon backenda (teče na `http://localhost:3000`):
+
+```bash
+npm run dev
+```
+
+### 2. Frontend
+
+V drugem terminalu:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Aplikacija je dostopna na `http://localhost:5173`. Zahtevke na `/api` Vite posreduje backendu.
+
+### Testni računi
+
+Vsi imajo geslo `geslo123`.
+
+| Vloga | E-pošta |
+|---|---|
+| Administrator | `admin@getad.si` |
+| Podjetje | `company@getad.si` |
+| Ustvarjalec | `user@getad.si` |
+
+Naložene slike in videi se shranijo v mapo `backend/uploads`, ki se ustvari sama.
+
 ## Dokumentacija
 
 1. [Zasnova rešitve](docs/01-zasnova-resitve.md)

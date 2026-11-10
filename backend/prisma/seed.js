@@ -16,10 +16,10 @@ async function main() {
   });
 
   await prisma.user.upsert({
-    where: { email: 'podjetje@getad.si' },
+    where: { email: 'company@getad.si' },
     update: {},
     create: {
-      email: 'podjetje@getad.si',
+      email: 'company@getad.si',
       password_hash,
       role: 'company',
       display_name: 'Testno podjetje',
@@ -28,9 +28,9 @@ async function main() {
   });
 
   await prisma.user.upsert({
-    where: { email: 'ustvarjalec@getad.si' },
+    where: { email: 'user@getad.si' },
     update: {},
-    create: { email: 'ustvarjalec@getad.si', password_hash, role: 'creator', display_name: 'Testni ustvarjalec' },
+    create: { email: 'user@getad.si', password_hash, role: 'creator', display_name: 'Testni ustvarjalec' },
   });
 
   console.log('Seed končan. Geslo za vse testne račune: geslo123');
