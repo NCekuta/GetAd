@@ -6,3 +6,11 @@ export const statusNames = {
   judging: 'Izbor zmagovalca',
   closed: 'Zaključen',
 };
+
+// Imena stanj oddaje v slovenščini
+export const submissionStatusNames = {
+  pending: 'Čaka na pregled',
+  approved: 'Odobrena',
+  rejected: 'Zavrnjena',
+  withdrawn: 'Umaknjena',
+};

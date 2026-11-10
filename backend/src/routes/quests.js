@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import prisma from '../db.js';
 import { requireAuth } from '../middleware/auth.js';
-import { uploadImage, filePath, deleteFile } from '../upload.js';
+import { uploadImage, uploadVideo, filePath, deleteFile } from '../upload.js';
 
 const router = Router();
 
@@ -95,7 +95,16 @@ router.get('/:id', requireAuth(), async (req, res) => {
   if (!quest || !canViewQuest(quest, req.user)) {
     return res.status(404).json({ error: 'Quest ne obstaja.' });
   }
-  res.json(quest);
+
+  // Ustvarjalcu dodamo še njegovo oddajo, da stran ve, ali je že oddal video
+  let mySubmission = null;
+  if (req.user.role === 'creator') {
+    mySubmission = await prisma.submission.findUnique({
+      where: { quest_id_creator_id: { quest_id: quest.id, creator_id: req.user.id } },
+    });
+  }
+
+  res.json({ ...quest, my_submission: mySubmission });
 });
 
 // Urejanje questa – samo lastnik in samo v stanju draft
@@ -203,5 +212,50 @@ router.delete('/:id/images/:assetId', requireAuth('company'), async (req, res) =
   deleteFile(asset.file_path);
   res.json({ ok: true });
 });
+
+// Oddaja videa (US-04): samo ustvarjalec, samo odprt quest (do roka), samo ena oddaja.
+// Najprej preverimo quest in prejšnjo oddajo, šele nato multer shrani video.
+router.post(
+  '/:id/submissions',
+  requireAuth('creator'),
+  async (req, res, next) => {
+    const quest = await prisma.quest.findUnique({ where: { id: Number(req.params.id) } });
+    // Po roku je quest že v stanju judging (closeExpiredQuests), zato zadošča preverjanje stanja
+    if (!quest || quest.status !== 'open') {
+      return res.status(400).json({ error: 'Oddaja je mogoča samo na odprt quest pred rokom.' });
+    }
+
+    const existing = await prisma.submission.findUnique({
+      where: { quest_id_creator_id: { quest_id: quest.id, creator_id: req.user.id } },
+    });
+    if (existing) {
+      return res.status(400).json({ error: 'Na ta quest si že oddal video.' });
+    }
+
+    req.quest = quest;
+    next();
+  },
+  uploadVideo,
+  async (req, res) => {
+    // Besedilna polja multer prebere skupaj z videom
+    const { title, description, ai_tool } = req.body;
+    if (!title || !description || !ai_tool) {
+      deleteFile(req.file.filename); // video brez podatkov ne potrebujemo
+      return res.status(400).json({ error: 'Izpolni vsa polja.' });
+    }
+
+    const submission = await prisma.submission.create({
+      data: {
+        quest_id: req.quest.id,
+        creator_id: req.user.id,
+        title,
+        description,
+        ai_tool,
+        video_path: req.file.filename, // stanje je privzeto pending
+      },
+    });
+    res.status(201).json(submission);
+  }
+);
 
 export default router;
