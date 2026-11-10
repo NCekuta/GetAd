@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import prisma from '../db.js';
 import { requireAuth } from '../middleware/auth.js';
+import { filePath } from '../upload.js';
 
 const router = Router();
 
@@ -57,6 +58,28 @@ router.post('/:id/withdraw', requireAuth('creator'), async (req, res) => {
     data: { status: 'withdrawn' },
   });
   res.json(updated);
+});
+
+// Predvajanje videa oddaje. Dostop imajo:
+// ustvarjalec (svojo oddajo), administrator (vse) in podjetje (samo odobrene oddaje na svojih questih)
+router.get('/:id/video', requireAuth(), async (req, res) => {
+  const submission = await prisma.submission.findUnique({
+    where: { id: Number(req.params.id) },
+    include: { quest: { include: { company: true } } },
+  });
+  if (!submission) {
+    return res.status(404).json({ error: 'Oddaja ne obstaja.' });
+  }
+
+  const isCreator = submission.creator_id === req.user.id;
+  const isAdmin = req.user.role === 'admin';
+  const isCompany = submission.quest.company.user_id === req.user.id && submission.status === 'approved';
+  if (!isCreator && !isAdmin && !isCompany) {
+    return res.status(404).json({ error: 'Oddaja ne obstaja.' });
+  }
+
+  // sendFile podpira tudi pošiljanje po delih (Range), zato lahko v predvajalniku previjamo
+  res.sendFile(filePath(submission.video_path));
 });
 
 export default router;

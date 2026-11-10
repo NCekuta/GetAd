@@ -76,6 +76,7 @@ export default function MySubmission({ submission, questOpen, onChange }) {
   return (
     <div className="bg-white border rounded p-4">
       <h2 className="font-bold text-lg mb-1">Tvoja oddaja</h2>
+      <video src={`/api/submissions/${submission.id}/video`} controls className="w-full rounded mb-2 bg-black" />
       <p className="font-semibold">{submission.title}</p>
       <p className="whitespace-pre-line">{submission.description}</p>
       <p className="text-sm text-gray-600">AI orodje: {submission.ai_tool}</p>
